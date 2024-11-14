@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "push": "git add . && git commit -m 'backup' && git push origin main",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -11,7 +12,8 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "@mapbox/node-pre-gyp": "^1.0.11",
-    "@prisma/client": "^5.21.1",
+    "@modelfusion/vercel-ai": "^1.1.0",
+    "@prisma/client": "^5.22.0",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-label": "^2.1.0",
@@ -30,6 +32,7 @@
     "lottie-react": "^2.4.0",
     "lucide-react": "^0.454.0",
     "mock-aws-s3": "^4.0.2",
+    "modelfusion": "^0.137.0",
     "next": "^15.0.2",
     "next-themes": "^0.3.0",
     "nock": "^13.5.5",

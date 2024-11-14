@@ -1,11 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { X, FileText, FileCode, FileImage, File } from 'lucide-react';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { FileText, FileCode, FileImage, File, X } from 'lucide-react';
 import { AiFillFilePdf, AiFillFileWord, AiFillFileExcel } from 'react-icons/ai';
+import { Button } from './ui/button';
 
 interface FileCardProps {
     file: File;
-    handleRemoveFile: () => void;
+    handleRemove: () => void;
 }
 
 const getFileIcon = (fileName: string) => {
@@ -35,9 +35,9 @@ const getFileIcon = (fileName: string) => {
     }
 };
 
-export default function FileCard({ file, handleRemoveFile }: FileCardProps) {
+export default function FileCard({ file, handleRemove }: FileCardProps) {
     return (
-        <Card className='w-full min-h-12 rounded-md shadow-lg'>
+        <Card className='relative min-h-4 rounded-md shadow-lg'>
             <CardHeader className='flex flex-row justify-between items-center px-6 py-4'>
                 <div className='flex flex-row justify-start items-center gap-4'>
                     {getFileIcon(file.name)}
@@ -46,9 +46,7 @@ export default function FileCard({ file, handleRemoveFile }: FileCardProps) {
                         <CardDescription className='text-sm text-gray-500'>{(file.size / 1000).toFixed(2)} KB</CardDescription>
                     </div>
                 </div>
-                <Button variant="ghost" size="icon" onClick={handleRemoveFile}>
-                    <X className="text-red-500" />
-                </Button>
+                <Button variant="ghost" type='button' className='absolute top-2 left-2 p-3 rounded-full' onClick={handleRemove}><X /></Button>
             </CardHeader>
         </Card>
     )

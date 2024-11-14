@@ -51,7 +51,7 @@ export default function Login() {
                 username: z.string().min(2),
                 passwordHash: z.string().min(8),
             }).parse(data);
-            await axios.post("/api/auth/login", validatedData);
+            await axios.post("/api/auth/login", { ...validatedData });
             toast.success("התחברת בהצלחה");
             router.push("/main");
         } catch (error) {

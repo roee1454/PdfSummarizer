@@ -64,6 +64,6 @@
         @apply border-border;
     }
     body {
-        @apply overflow-hidden bg-gradient-to-r from-blue-500 to-purple-900 dark:bg-gradient-to-r dark:from-background dark:to-indigo-900 text-foreground;
+        @apply overflow-hidden bg-gradient-to-r from-blue-800 to-purple-900 dark:bg-gradient-to-r dark:from-background dark:to-indigo-900 text-foreground;
     }
 }

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -37,13 +37,14 @@ export default function RegisterPage() {
         setError(null);
         try {
             const validatedData = schema.parse(data);
-            await axios.post("/api/auth/register", validatedData);
+            console.log(validatedData);
+            await axios.post("http://localhost:3000/api/auth/register", { ...validatedData });
             toast.success("נרשמת בהצלחה");
             router.push("/auth/register/successfull");
         } catch (error) {
             if (error instanceof z.ZodError) {
                 setError("שגיאה בהרשמה, נסה שוב: " + error.errors.map(e => e.message).join(", "));
-            } else {
+            } else if (error instanceof AxiosError) {
                 setError("שגיאה בהרשמה, נסה שוב");
             }
         } finally {

@@ -20,7 +20,7 @@ export default function MainLayout({
 }) {
     return (
         <div className={assistant.className}>
-            <div className="flex-grow px-2.5 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8 lg:px-8 lg:py-10 xl:px-10 xl:py-12 2xl:px-12 2xl:py-14 text-white">
+            <div className="flex-grow px-2.5 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8 lg:px-8 lg:py-10 xl:px-10 xl:py-12 2xl:px-12 2xl:py-14">
                 <UserProvider>
                     <Header />
                     {children}

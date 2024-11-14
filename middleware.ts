@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken, verifyTempToken } from "@/modules/server";
+import { verifyToken, verifyTempToken } from "@/services/server";
 
-export default async function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
     const redirectTo = (path: string) =>
@@ -10,11 +10,13 @@ export default async function middleware(req: NextRequest) {
     const handleAuthPaths = async () => {
         try {
             const payload = await verifyToken(req);
+
             if (payload) {
                 return redirectTo("/main");
             }
+
         } catch (error) {
-            console.error("Token verification failed:", error);
+            console.log("Token verification failed:", error);
         }
 
         switch (pathname) {
@@ -47,7 +49,7 @@ export default async function middleware(req: NextRequest) {
                 return NextResponse.next();
             }
         } catch (error) {
-            console.error("Token verification failed:", error);
+            console.log("Token verification failed:", error);
         }
         return redirectTo("/auth/login");
     };

@@ -11,7 +11,6 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogDescription,
     DialogFooter,
 } from "@/components/ui/dialog"; // Import Dialog components
 import { Mail } from "lucide-react";
