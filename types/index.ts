@@ -3,14 +3,7 @@ export interface Chat {
     title: string,
     createdAt: Date,
     updatedAt: Date,
-    prompts: Prompt[],
-}
-
-export interface Prompt {
-    question: string,
-    response: string,
-    createdAt: Date,
-    updatedAt: Date,
+    messages: Message[],
 }
 
 export interface User {
@@ -18,9 +11,11 @@ export interface User {
     fullName: string,
     username: string,
     passwordHash: string,
-    chats: Chat[],
-    prompts: Prompt[],
 }
 
-
-export type Prompts = Prompt[];
+export interface Message {
+    chatId: string,
+    createdAt: Date,
+    content: string,
+    type: "reply" | "message" | "loading"
+}

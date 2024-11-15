@@ -2,6 +2,7 @@ import { Assistant } from "next/font/google";
 import { Metadata } from "next";
 import Header from "@/components/header";
 import { UserProvider } from "@/context/user-provider";
+
 const assistant = Assistant({
     subsets: ["hebrew"],
     variable: "--font-assistant",

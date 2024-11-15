@@ -8,6 +8,7 @@ interface ChatInputProps {
   onKeyDown?: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void
   onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void
   placeholder?: string
+  disabled?: boolean
 }
 
 const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(({ className, value, onKeyDown, onChange, placeholder, ...props }, ref) => (

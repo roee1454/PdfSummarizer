@@ -37,7 +37,7 @@ const getFileIcon = (fileName: string) => {
 
 export default function FileCard({ file, handleRemove }: FileCardProps) {
     return (
-        <Card className='relative min-h-4 rounded-md shadow-lg'>
+        <Card className='relative min-w-64 min-h-4 rounded-md shadow-lg'>
             <CardHeader className='flex flex-row justify-between items-center px-6 py-4'>
                 <div className='flex flex-row justify-start items-center gap-4'>
                     {getFileIcon(file.name)}

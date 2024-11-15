@@ -12,24 +12,40 @@ import { MessageCircleCode } from "lucide-react";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { useEffect, useState, useMemo } from "react";
+import { Chat } from "@/types";
+import { useUser } from "@/context/user-provider";
 
 interface ChatsSheetProps {
     open: boolean;
     onOpenChange: (open: boolean) => any;
 }
 
+const SkeletonLoader = () => {
+    return <Skeleton className="w-full h-12 p-6"></Skeleton>;
+};
+
 export default function ChatsSheet({ open, onOpenChange }: ChatsSheetProps) {
-    const SkeletonLoader = () => {
-        return <Skeleton className="w-full h-full p-6"></Skeleton>;
-    };
+    
+    const [chats, setChats] = useState<Chat[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const user = useUser();
+
+    useEffect(() => {
+        if (user && user.id) {
+            async function fetchChats() {
+                setIsLoading(true)
+                const res = await axios.get(`/api/chats?userId=${user?.id}`)
+                if (res.status !== 200 || !res.data) return []
+                setChats(res.data.chats.toSorted((a: Chat, b: Chat) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+                setIsLoading(false)
+            }
+            fetchChats()
+        }
+    }, [user])
 
     const router = useRouter();
-
-    const isLoading = false;
-    const chats = [
-        { id: 1, title: "Chat 1" },
-        { id: 2, title: "Chat 2" },
-    ];
 
     const handleLogout = async () => {
         try {
@@ -54,10 +70,10 @@ export default function ChatsSheet({ open, onOpenChange }: ChatsSheetProps) {
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
-            <SheetContent dir="rtl" className="w-full h-full" side={"left"}>
+            <SheetContent dir="rtl" className="w-full h-full bg-gradient-to-r from-blue-800 to-purple-900 dark:bg-gradient-to-r dark:from-background dark:to-indigo-900 text-white border-none" side={"left"}>
                 <SheetHeader>
-                    <SheetTitle>צ'אטים אחרונים</SheetTitle>
-                    <SheetDescription>
+                    <SheetTitle className="text-white">צ'אטים אחרונים</SheetTitle>
+                    <SheetDescription className="text-white">
                         כל הצ'אטים האחרונים שהתרחשו במערכת
                     </SheetDescription>
                 </SheetHeader>
@@ -71,7 +87,7 @@ export default function ChatsSheet({ open, onOpenChange }: ChatsSheetProps) {
                                     <Link
                                         onClick={() => onOpenChange(!open)}
                                         key={index}
-                                        href={`/chat/${chat.id}`}
+                                        href={`/main/${chat.id}`}
                                         className="cursor-pointer flex flex-row justify-between items-center p-2 transition-all hover:bg-slate-300 hover:bg-opacity-50 rounded-md w-full"
                                     >
                                         <div className="font-bold">

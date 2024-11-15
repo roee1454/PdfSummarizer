@@ -1,9 +1,8 @@
 "use client";
 
-import { Paperclip, Send } from "lucide-react";
+import { Paperclip, Send, Loader } from "lucide-react";
 import FileCard from "@/components/file-card";
 import { useForm } from "react-hook-form";
-import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,54 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
-
-const allowedExtensions = [
-    ".js",
-    ".ts",
-    ".py",
-    ".docx",
-    ".pdf",
-    ".xlsx",
-    ".csv",
-    ".txt",
-    ".json",
-];
-const maxSizeMB = 10;
-const maxSizeBytes = maxSizeMB * 1024 * 1024;
-
-const validateFile = (file: File) => {
-    if (!file) return;
-
-    const fileExtension =
-    "." +
-    file.name
-    .slice(((file.name.lastIndexOf(".") - 1) >>> 0) + 2)
-    .toLowerCase();
-    console.log(fileExtension);
-    const fileSize = file.size;
-    
-    if (!allowedExtensions.includes(`${fileExtension}`)) {
-        return new Error(
-            `סוג קובץ לא נתמך, נא לעלות מהקבצים הבאים:\n${allowedExtensions.map(extension => `${extension}, `)}`
-        );
-    }
-    
-    if (fileSize > maxSizeBytes) {
-        return new Error("גודל התקייה הוא מעל המותר (10MB).");
-    }
-};
-
-const InputFormSchema = z.object({
-    question: z
-        .string()
-        .min(1, { message: "יש לנסח הודעה ולא לשלוח משימה ריקה" })
-        .max(2500, { message: "עברתם את האורך המקסימלי להודעה זו!" }),
-    file: z.instanceof(File).nullable()
-});
-
-interface InputFormValues extends z.infer<typeof InputFormSchema> {}
+import { useUser } from "@/context/user-provider";
+import { Chat, Message } from "@/types";
+import { InputFormSchema, InputFormValues, validateFile } from '@/lib/files'
 
 export default function Client() {
+
+    const user = useUser();
 
     const form = useForm<InputFormValues>({
         resolver: zodResolver(InputFormSchema),
@@ -66,7 +24,11 @@ export default function Client() {
             question: "",
             file: null
         }
-    })
+    });
+
+    const { replace } = useRouter();
+
+    const [loading, setLoading] = useState<boolean>(false);
 
     const currentFile = form.watch("file");
 
@@ -88,15 +50,18 @@ export default function Client() {
         const { file, question } = values;
         const formData = new FormData();
         formData.set("question", question);
-        formData.set("file", JSON.stringify(file));
-
+        if (file) formData.set('file', file);
+        setLoading(true);
         try {
-            // Fetch for creating a prompt
-            await axios.post("/api/chats", { ...formData })
-            
-
+            const chatData = { title: question.substring(0, 25).concat("..."), id: user?.id }
+            const { data: chat } = await axios.post<Chat>("/api/chats", { ...chatData });
+            await axios.put<Message>(`/api/chats/${chat.id}`, formData);
+            replace(`/main/${chat.id}`)
         } catch (err) {
             console.error(`Error submitting prompt`)
+        } finally {
+            setLoading(false);
+            form.reset();
         }
 
     }
@@ -107,15 +72,15 @@ export default function Client() {
             <p className="font-normal text-xl max-sm:text-sm text-destructive-foreground dark:text-muted-foreground [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)]">תתחילו בכך שתיתנו לנו דרישות התחלתיות לדמ"צ שלכם</p>
             <form className="min-w-[300px] max-w-[400px] flex flex-col gap-6" onSubmit={form.handleSubmit(handleFirstPrompt as any)}>
                 <div className="relative">
-                    <Input placeholder="הקלידו את הדרישה ההתחלתית" className="pl-24 resize-none rounded-full shadow-xl focus-visible:ring-none focus-visible:border-none text-black dark:text-white" { ...form.register("question", { required: true }) } />
-                    <Input onChange={handleFileChange} id="files" type="file" className="hidden" />
+                    <Input disabled={loading} placeholder="הקלידו את הדרישה ההתחלתית" className="pl-24 resize-none rounded-full shadow-xl focus-visible:ring-none focus-visible:border-none text-black dark:text-white" { ...form.register("question", { required: true }) } />
+                    <Input disabled={loading} onChange={handleFileChange} id="files" type="file" className="hidden" />
                     {form.formState.errors.question && <p className="text-red-500 text-lg text-center">{form.formState.errors.question.message}</p>}
                     {form.formState.errors.file && <p className="text-red-500 text-lg text-center">{form.formState.errors.file.message}</p>}
                     <Label htmlFor="files" className={buttonVariants({
                         variant: "ghost",
                         className: "absolute top-0 left-10 cursor-pointer"
                     })}><Paperclip className="w-5 h-5 text-black dark:text-white" /></Label>    
-                    <Button variant={"ghost"} className="absolute top-0 left-0 rounded-full " type="submit"><Send className="w-5 h-5 text-black dark:text-white" /></Button>
+                    <Button disabled={loading} variant={"ghost"} className="absolute top-0 left-0 rounded-full " type="submit">{ loading ? <Loader className="w-5 h-5 text-black dark:text-white" /> : <Send className="w-5 h-5 text-black dark:text-white" /> }</Button>
                 </div>        
                 { currentFile && <FileCard file={currentFile} handleRemove={handleFileRemove} /> }    
             </form>

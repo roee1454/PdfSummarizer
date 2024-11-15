@@ -41,7 +41,6 @@ export async function middleware(req: NextRequest) {
     const handleMainPaths = async () => {
         try {
             const payload = await verifyToken(req);
-            console.log(payload);
             if (payload) {
                 if (pathname.startsWith("/auth/")) {
                     return redirectTo("/main");

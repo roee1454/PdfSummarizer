@@ -1,6 +1,6 @@
 "use client";
 
-import logo from "@/assets/favicon.png";
+
 import Link from "next/link";
 import Image from "next/image";
 import PressableIcon from "./pressable-icon";
