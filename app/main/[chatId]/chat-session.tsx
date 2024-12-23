@@ -8,8 +8,11 @@ interface ChatSessionProps {
 }
 
 export default function ChatSession({ chat }: ChatSessionProps) {
+
+    const url = process.env.NODE_WEB_SOCKET_URL || "ws://localhost:5000"
+
     return (
-        <WebSocketProvider url="ws://localhost:5000">
+        <WebSocketProvider url={url}>
             <ChatContainer chat={chat} />
         </WebSocketProvider>
     )

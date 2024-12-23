@@ -17,5 +17,6 @@ export interface Message {
     chatId: string,
     createdAt: Date,
     content: string,
-    type: "reply" | "message" | "loading"
+    type: "reply" | "message" | "loading" | "reply_file" | "message_file"
+    hasFile?: boolean
 }

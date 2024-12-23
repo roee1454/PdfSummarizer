@@ -14,9 +14,18 @@ export default function useChatSocket(chatId: string, previousMessages: Message[
   useEffect(() => {
     // Happens when the client recieves a message
     async function onMessage(event: MessageEvent) {
-      const payload =
+      const content =
         typeof event.data === 'string' ? event.data : await event.data.text();
-      const message = JSON.parse(payload) as Message;
+      const message: Message = {
+        content,
+        chatId,
+        createdAt: new Date(Date.now()),
+        type: "reply",
+      };
+      console.log(message);
+
+      // TODO: Save server message on database
+
       setMessages((p) => {
         const filteredPrerviousMessages = p.filter(message => message.type !== "loading");
         return [...filteredPrerviousMessages, message];
@@ -40,17 +49,16 @@ export default function useChatSocket(chatId: string, previousMessages: Message[
 
   function sendMessage(content: string) {
     setIsProcessingMessage(true);
-    setMessages(prev => [...prev, { chatId, content: "", createdAt: new Date(), type: "loading" }])
+    setMessages(prev => [...prev, newMessage]);
+    // TODO: POST message to database...
+    setMessages(prev => [...prev, { chatId, content: "", createdAt: new Date(), type: "loading", }])
     ws?.send(content);
     const newMessage: Message = { chatId, createdAt: new Date(Date.now()), content, type: "message" };
-
-    // TODO: POST message to database...
-    
-    setMessages(prev => [...prev, newMessage]);
   }
 
   function sendLastMessage(msg: Message) {
     setIsProcessingMessage(true);
+    setMessages(prev => [...prev, { chatId, content: "", createdAt: new Date(), type: "loading" }])
     ws?.send(msg.content);
   }
 
