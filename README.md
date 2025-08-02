@@ -1,3 +1,6 @@
+A Next JS app that can get a PDF file and summerize it and have a conversation about it, using DictaLM and LlamaCPP.
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
