@@ -4,7 +4,7 @@ Made while in IDF at Innovation Leading.
 
 ## Installation
 
-- Clone Repo and Python Server Repo: `https://github.com/roee1454/PdfSummerizerServer`
+- Clone Repo and Python Server Repo: [https://github.com/roee1454/PdfSummerizerServer]
 
 - Run the development server:
 
